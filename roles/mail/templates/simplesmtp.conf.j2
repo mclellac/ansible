@@ -1,0 +1,23 @@
+# The user that gets all the mails (UID < 1000, usually the admin)
+root=operations@unixxx.net
+
+# The mail server (where the mail is sent to), both port 465 or 587 should be acceptable
+# See also http://mail.google.com/support/bin/answer.py?answer=78799
+mailhub=mail.unixxx.net:65530
+
+# The address where the mail appears to come from for user authentication.
+#rewriteDomain=unixxx.net
+
+# The full hostname
+hostname={{ ansible_fqdn }}
+
+# Use SSL/TLS before starting negotiation
+UseTLS=Yes
+UseSTARTTLS=Yes
+
+# Username/Password
+AuthUser=operations
+AuthPass={{ smtpclient_pass }}
+
+# Email 'From header's can override the default domain?
+FromLineOverride=yes

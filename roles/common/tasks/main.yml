@@ -1,0 +1,109 @@
+---
+# tasks file for common
+# 
+#- include_vars: vars/{{ envfile | default("test") }}.yml
+
+# run OS specific .yml file based on OS family
+#- include_vars: "{{ item }}"
+#  with_first_found:
+#   - "{{ ansible_os_family }}.yml"
+
+#- include: Debian.yml
+#  when: ansible_os_family == 'Debian'
+
+#- include: RedHat.yml
+#  when: ansible_os_family == 'Redhat'
+
+- include: RedHat.yml
+  when: ansible_distribution == "CentOS" and (ansible_distribution_major_version == "6" or ansible_distribution_major_version == "7")
+
+- name: place cron allow file
+  copy: src=cron.allow dest=/etc/ mode=0440 owner=root group=root
+
+- name: place at.allow file
+  copy: src=at.allow dest=/etc/ mode=0440 owner=root group=root
+
+- name: place sshd config
+  copy: src=sshd_config dest=/etc/ssh/ mode=644 owner=root group=root
+  notify: restart ssh
+
+- name: place ssh config
+  copy: src=ssh_config dest=/etc/ssh/ mode=644 owner=root group=root
+  notify: restart ssh
+
+# - name: run the new keys script for sshd 
+#   script: keygens.sh removes=/etc/ssh/ssh_host_dsa_key creates=/etc/ssh/ssh_host_ed25519_key
+
+- name: place ntp config
+  template: src=ntp.conf.j2 dest=/etc/ntp.conf mode=644 owner=root
+
+#- name: place fail2ban config 
+#  template: src=jail.conf.j2 dest=/etc/fail2ban/jail.conf mode=644 owner=root
+#  notify: restart fail2ban
+
+#-- group tasks --
+- name: remove groups that are not necessary
+  group: name={{ item }} state=absent
+  with_items: removable_groups
+
+- name: add some required groups
+  group: name={{ item.group_name }} gid={{ item.gid }} state=present
+  with_items: group_add
+
+#-- user tasks -- 
+- name: remove some users
+  user: name={{ item }} state=absent
+  with_items: removable_users
+
+- name: remove some groups
+  group: name={{ item }} state=absent
+  with_items: removable_groups
+
+- name: nologin for system stuff 
+  user: name={{ item }} shell=/usr/sbin/nologin
+  with_items: nologin_users
+
+- name: remove some users
+  user: name={{ item }} state=absent
+  with_items: removable_users
+
+- name: add system users
+  user: >
+    name={{ item.username }}
+    comment='{{ item.name }}'
+    uid={{ item.uid }}
+    password='{{ item.password }}'
+  with_items: users
+
+- name: configure system users
+  user: >
+    name={{ item.username }}
+    group={{ item.group if item.group is defined else (users_group if users_group != false else item.username) }}
+    groups={{ item.groups|join(',') if item.groups is defined else users_groups|join(',')}}
+  with_items: users
+
+- name: set default home directory permissions
+  file: >
+    dest=/home/{{ item.username }} owner={{ item.username }}
+    group={{ item.group if item.group is defined else (users_group if users_group != false else item.username) }}
+    mode=0755
+  with_items: users
+
+- name: add .ssh directory in users home directory
+  file: >
+    path=/home/{{ item.username }}/.ssh owner={{ item.username }}
+    group={{ item.group if item.group is defined else (users_group if users_group != false else item.username) }}
+    state=directory
+    mode=0700
+  with_items: users
+
+#-- verify nologin accounts --
+- name: set /usr/sbin/nologin for application usernames
+  user: name={{ item }} shell=/usr/sbin/nologin
+  with_items: nologin_users
+
+- name: permissions on root home
+  file: dest=/root state=directory mode=0700
+
+- name: root shouldn't be using ssh anyway
+  file: dest=/root/.ssh state=absent

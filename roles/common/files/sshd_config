@@ -1,0 +1,64 @@
+#-- sshd_config --#
+
+# If you want to change the port on a SELinux system, you have to tell
+# SELinux about this change.
+# semanage port -a -t ssh_port_t -p tcp #PORTNUMBER
+
+#Port 22
+#AddressFamily any
+#ListenAddress 0.0.0.0
+#ListenAddress ::
+
+# The default requires explicit activation of protocol 1
+#Protocol 2
+
+HostKey /etc/ssh/ssh_host_rsa_key
+HostKey /etc/ssh/ssh_host_ecdsa_key
+
+#-- Logging --#
+SyslogFacility AUTHPRIV
+
+#-- Authentication --#
+#LoginGraceTime 2m
+#StrictModes yes
+#MaxAuthTries 6
+#MaxSessions 10
+PermitRootLogin no
+RSAAuthentication yes
+PubkeyAuthentication yes
+AuthorizedKeysFile	.ssh/authorized_keys
+PasswordAuthentication yes
+ChallengeResponseAuthentication no
+
+#-- Kerberos options --#
+#KerberosAuthentication no
+#KerberosOrLocalPasswd yes
+#KerberosTicketCleanup yes
+#KerberosGetAFSToken no
+#KerberosUseKuserok yes
+
+#-- GSSAPI options --#
+GSSAPIAuthentication yes
+GSSAPICleanupCredentials yes
+UsePAM yes
+
+#AllowAgentForwarding yes
+#AllowTcpForwarding yes
+X11Forwarding no
+UsePrivilegeSeparation sandbox		# Default for new installations.
+
+#-- no default banner path --#
+#Banner none
+
+#-- Accept locale-related environment variables --#
+AcceptEnv LANG LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES
+AcceptEnv LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT
+AcceptEnv LC_IDENTIFICATION LC_ALL LANGUAGE
+AcceptEnv XMODIFIERS
+
+#-- override default of no subsystems --#
+Subsystem	sftp	/usr/libexec/openssh/sftp-server
+
+#-- Uncomment this if you want to use .local domain --#
+#Host *.local
+#	CheckHostIP no

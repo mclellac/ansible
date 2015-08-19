@@ -1,0 +1,72 @@
+---
+- name: update apt cache
+  apt: update_cache=yes
+  when: ansible_os_family == "Debian"
+
+- name: apt-get upgrade all the things
+  apt: upgrade=dist
+  when: ansible_os_family == "Debian"
+
+- name: apt install some useful things
+  apt: name={{ item }} state=latest
+  with_items:
+   - fail2ban
+   - ufw
+   - vim
+   - rsync
+   - ntp
+  when: ansible_os_family == "Debian"
+
+- name: remove useless packages
+  apt: name={{ item }} state=absent
+  with_items:
+   - nano
+   - popularity-contest
+   - accountsservice 
+   - libpolkit-gobject-1-0 
+   - policykit-1
+  when: ansible_os_family == "Debian"
+
+- name: remove useless ubuntu-specific packages
+  apt: name={{ item }} state=absent
+  with_items:
+   - ubuntu-standard
+   - ubuntu-minimal
+   - language-selector-common
+  when: ansible_distribution == "Ubuntu"
+
+# note: need package installs for RedHat
+
+- name: enable ufw
+  ufw: state=enabled
+  when: ansible_os_family == "Debian"
+
+- name: ufw rule 1
+  ufw: rule=allow name=OpenSSH from=192.168.250.0/24
+  when: ansible_os_family == "Debian"
+
+- name: ufw rule 2
+  ufw: rule=allow from=192.168.1.0/24
+  when: ansible_os_family == "Debian"
+
+- name: ufw rule 3
+  ufw: rule=allow from={{ item }}
+  with_items:
+    - 10.17.0.0/16
+    - 10.23.0.0/16
+  when: ansible_os_family == "Debian" and inventory_hostname != "zork"
+
+# note: Firewall rules needed for os_family RedHat
+
+- name: remount proc 
+  shell: "mount -o remount,rw,hidepid=2 /proc"
+
+# note: proc restriction needed for Ubuntu (diff. from Debian for now) and RedHat
+- name: restrict proc to user processes after reboot
+  lineinfile: dest=/etc/fstab state=present regexp='proc' line='proc    /proc    proc    defaults,rw,hidepid=2      0     0'
+  when: ansible_os_family == "Debian"
+
+- name: network security tweak
+  template: src=sysctl-network-sec.j2 dest=/etc/sysctl.d/10-network-security.conf mode=0644 owner=root group=root
+  notify: reload sysctl
+  when: ansible_os_family == 'Debian'

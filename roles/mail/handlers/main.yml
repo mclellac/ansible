@@ -1,0 +1,14 @@
+---
+# handlers file for mail
+- name: restart sasl
+  service: name=saslauthd state=restarted
+
+- name: newaliases
+  command: newaliases
+  notify: restart postfix
+
+- name: restart postfix
+  service: name=postfix state=restarted
+
+- name: restart dovecot
+  service: name=dovecot state=restarted

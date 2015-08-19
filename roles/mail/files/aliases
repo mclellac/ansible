@@ -1,0 +1,8 @@
+# See man 5 aliases for format
+careymclelland: mclellac
+ops: mclellac
+root: operations
+admin: operations
+webmaster: operations
+abuse: operations
+postmaster: operations

@@ -1,0 +1,3 @@
+---
+- { include: nomta.yml, when: "inventory_hostname not in groups['mailhost']" }
+- { include: mta.yml, when: "inventory_hostname in groups['mailhost']" }

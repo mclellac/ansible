@@ -1,0 +1,47 @@
+---
+- name: temporarily disable SELinux
+  selinux: state=disabled
+
+- name: update cache
+  yum:  name='*' update_cache=yes state=latest
+
+# turn this into a script so it can fail gracefully when already installed
+#- name: install latest epel
+#  shell: sudo rpm -Uvh http://dl.fedoraproject.org/pub/epel/epel-release-latest-`(cat /etc/redhat-release | awk '{print int($4)}')`.noarch.rpm
+
+- name: upgrade currently installed packages
+  yum:  name='*' state=latest
+
+- name: install a handful of useful packages
+  yum: name={{ item }} state=latest
+  with_items:
+   - curl
+   - fail2ban
+   - git
+   - irssi
+   - lsof
+   - net-tools 
+   - nmap
+   - ntp
+   - rsync
+   - telnet
+   - tmux
+   - vim-enhanced
+   - wget
+
+- name: remove useless packages
+  yum: name={{ item }} state=absent
+  with_items:
+   - nano
+   - popularity-contest
+   - accountsservice 
+   - libpolkit-gobject-1-0 
+   - policykit-1
+
+#- name: remove useless Red Hat packages
+#  yum: name={{ item }} state=absent
+#  with_items:
+#    - blah
+#  when: ansible_distribution == "RedHat"
+
+# note: need iptable rules RedHat

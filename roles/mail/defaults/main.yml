@@ -1,0 +1,9 @@
+---
+# vars file for mail
+mailname: mail.federlein
+mail_self_signed_cert_subj: "/C=US/ST=Minnesota/L=Saint Paul/O=IT/CN=mail.{{ orgdomain }}"
+mail_ssl_certificate: "/etc/ssl/certs/smtpd.crt"
+mail_ssl_certificate_key: "/etc/ssl/private/smtpd.key"
+smtpd_port_1: 65530
+smtpd_port_2: 65531
+imaps_port: 65532

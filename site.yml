@@ -1,0 +1,18 @@
+---
+- name: provision web server
+  hosts: www
+  remote_user: mclellac 
+  gather_facts: true
+  sudo: yes
+  vars_files:
+    - group_vars/all
+    - group_vars/secrets
+
+  roles:
+    - common
+    #- mail
+    #- security
+    #- mysql
+    #- nginx
+    #- php-fpm
+    #- wordpress

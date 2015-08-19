@@ -13,25 +13,21 @@ ec2_instance_count:
 group_add:
   - gid: 10000
     group_name: users
-  - gid: 20000
+  - gid: 11000
     group_name: sysadmins
-  - gid: 20001
-    group_name: mclellac
-  - gid: 20002
-    group_name: mcconnell
 users:
-  - username: mclellac
-    name: "Carey McLelland"
-    uid: "20001"
-    password: "$1$saltforp$ijEj.HCEr9.LRy3Gb6Urd."
+  - username: doej
+    name: "John Doe"
+    uid: "10000"
+    password: "$1$saltrrp$ijEj.FdgvHCEr9.LRy4Gb9Urd."
     shell: "/bin/bash"
     authorized_keys: []
     state: present
-  - username: mcconnell
-    name: "Jeff McConnell"
+  - username: janed
+    name: "Jane Doe"
     uid: "20002"
-    password: ""
-    shell: "/bin/bash"
+    password: "$1$saltrrp$ijEj.FdgvHCEr9.LRy4Gb9Urd."
+    shell: "/bin/zsh"
     authorized_keys: []
     state: present
 users_group: users

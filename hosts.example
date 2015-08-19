@@ -1,5 +1,4 @@
 localhost ansible_connection=local
 
 [www]
-104.236.129.12 ansible_ssh_user=mclellac
-
+199.199.199.198

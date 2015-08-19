@@ -5,9 +5,15 @@
 - name: update cache
   yum:  name='*' update_cache=yes state=latest
 
-# turn this into a script so it can fail gracefully when already installed
-#- name: install latest epel
-#  shell: sudo rpm -Uvh http://dl.fedoraproject.org/pub/epel/epel-release-latest-`(cat /etc/redhat-release | awk '{print int($4)}')`.noarch.rpm
+- name: install epel repo.
+  yum:
+    name: "{{ epel_repo_url }}"
+    state: present
+
+- name: import epel gpg key.
+  rpm_key:
+    key: "{{ epel_repo_gpg_key_url }}"
+    state: present
 
 - name: upgrade currently installed packages
   yum:  name='*' state=latest

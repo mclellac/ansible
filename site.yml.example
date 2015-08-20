@@ -1,7 +1,7 @@
 ---
 - name: provision web server
   hosts: www
-  remote_user: mclellac 
+  remote_user: {{ your_username }} 
   gather_facts: true
   sudo: yes
   vars_files:

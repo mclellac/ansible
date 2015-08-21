@@ -1,9 +1,0 @@
----
-- name: apt install simple smtp
-  apt: name={{ item }} state=latest
-  with_items:
-   - ssmtp
-   - mailutils
-
-- name: place config file
-  template: src=simplesmtp.conf.j2 dest=/etc/ssmtp/ssmtp.conf owner=root group=mail mode=0640

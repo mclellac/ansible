@@ -10,9 +10,20 @@
 
   roles:
     - common
-    #- mail
-    #- security
-    #- mysql
-    #- nginx
-    #- php-fpm
-    #- wordpress
+    - security
+    - nginx
+    - php-fpm
+    - wordpress
+
+- name: provision db server
+  hosts: db
+  remote_user: {{ your_username }} 
+  gather_facts: true
+  sudo: yes
+  vars_files:
+    - group_vars/all
+    - group_vars/secrets
+
+  roles:
+    - mariadb
+

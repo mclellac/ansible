@@ -3,7 +3,7 @@
   selinux: state=disabled
 
 - name: update cache
-  yum:  name='*' update_cache=yes state=latest
+  yum: name='*' update_cache=yes state=latest
 
 - name: install epel repo.
   yum:
@@ -16,7 +16,7 @@
     state: present
 
 - name: upgrade currently installed packages
-  yum:  name='*' state=latest
+  yum: name='*' state=latest
 
 - name: install a handful of useful packages
   yum: name={{ item }} state=latest

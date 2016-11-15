@@ -24,7 +24,6 @@
    - curl
    - fail2ban
    - git
-   - irssi
    - lsof
    - net-tools 
    - nmap

@@ -1,0 +1,52 @@
+---
+# common role variables
+epel_repo_url: "http://download.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm"
+epel_repo_gpg_key_url: "/etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-{{ ansible_distribution_major_version }}"
+
+group_add:
+  - gid: 10000
+      group_name: users
+  - gid: 11000
+      group_name: sysadmins
+
+users:
+  - username: username
+      name: "Mrs. User"
+      uid: "10000"
+      password: ""
+      shell: "/bin/bash"
+      authorized_keys: []
+      state: present
+
+users_group: users
+
+users_groups: [ "sysadmins" ]
+
+removable_users:
+  - games
+  - gnats
+  - irc
+  - list
+  - news
+  - proxy
+  - uucp
+
+removable_groups:
+  - games
+  - gnats
+  - irc
+  - list
+  - news
+  - proxy
+  - uucp
+
+nologin_users:
+  - backup
+  - bin
+  - daemon
+  - libuuid
+  - lp
+  - mail
+  - man
+  - nobody
+  - sys

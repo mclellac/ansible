@@ -6,4 +6,4 @@ Host *
     IdentitiesOnly yes
     ForwardAgent yes
     KeepAlive yes
-    ServerAliveInterval 60
+    ServerAliveInterval 300

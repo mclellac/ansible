@@ -3,27 +3,12 @@
   hosts: www
   remote_user: {{ your_username }} 
   gather_facts: true
-  sudo: yes
+  become: yes
   vars_files:
     - group_vars/all
     - group_vars/secrets
 
   roles:
     - common
-    - security
     - nginx
-    - php-fpm
-    - wordpress
-
-- name: provision db server
-  hosts: db
-  remote_user: {{ your_username }} 
-  gather_facts: true
-  sudo: yes
-  vars_files:
-    - group_vars/all
-    - group_vars/secrets
-
-  roles:
-    - mariadb
 
